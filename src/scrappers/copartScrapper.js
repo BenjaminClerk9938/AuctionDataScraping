@@ -4,15 +4,24 @@ const fs = require('fs');
 (async () => {
   try {
     // Launch Puppeteer
-    const browser = await puppeteer.launch({ headless: true });
+    const browser = await puppeteer.launch({ 
+      headless: true,
+      timeout: 60000  // Increase timeout to 60 seconds
+    });
     const page = await browser.newPage();
 
+    // Set longer timeout for navigation
+    await page.setDefaultNavigationTimeout(60000);
+    
     // Navigate to the Copart auction page
     const url = 'https://www.copart.com/todaysAuction';
-    await page.goto(url, { waitUntil: 'networkidle2' });
+    await page.goto(url, { 
+      waitUntil: 'networkidle2',
+      timeout: '60000' 
+    });
 
-    // Wait for the table to load
-    await page.waitForSelector('#auctionLiveNow-datatable');
+    // Wait for table with longer timeout
+    await page.waitForSelector('#auctionLiveNow-datatable', { timeout: 60000 });
 
     // Extract data from the table
     const liveNowTableData = await page.evaluate(() => {
@@ -22,15 +31,15 @@ const fs = require('fs');
         const cells = row.querySelectorAll('td');
         return {
           saleTime: cells[0]?.innerText.trim(),
-          saleName: cells[1]?.innerText.trim(),
+          saleName: { name: cells[1]?.innerText.trim(), link: cells[1]?.querySelector('a.viewsalelist')?.href},
           region: cells[2]?.innerText.trim(),
           saleType: cells[3]?.innerText.trim(),
           saleHighlights: cells[4]?.innerText.trim(),
           lane: cells[5]?.innerText.trim(),
-          items: cells[6]?.innerText.trim(),
+          items: cells[7]?.innerText.trim(),
           actions: {
-            joinAuction: cells[7]?.querySelector('a[href*="join"]')?.href,
-            viewSaleList: cells[7]?.querySelector('a[href*="saleList"]')?.href,
+            joinAuction: cells[8]?.querySelector('a[href*="join"]')?.href,
+            viewSaleList: cells[8]?.querySelector('a[href*="saleList"]')?.href,
           },
         };
       });
@@ -51,10 +60,10 @@ const fs = require('fs');
           saleType: cells[3]?.innerText.trim(),
           saleHighlights: cells[4]?.innerText.trim(),
           lane: cells[5]?.innerText.trim(),
-          items: cells[6]?.innerText.trim(),
+          items: cells[7]?.innerText.trim(),
           actions: {
-            joinAuction: cells[7]?.querySelector('a[href*="join"]')?.href,
-            viewSaleList: cells[7]?.querySelector('a[href*="saleList"]')?.href,
+            joinAuction: cells[8]?.querySelector('a[href*="join"]')?.href,
+            viewSaleList: cells[8]?.querySelector('a[href*="saleList"]')?.href,
           },
         };
       });
