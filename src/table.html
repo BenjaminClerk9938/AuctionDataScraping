@@ -1,0 +1,200 @@
+<table id="auctionLiveNow-datatable" class="table table-hover table-responsive dataTable dtr-inline no-footer dtr-column" cellspacing="0" width="100%" role="grid" aria-describedby="auctionLiveNow-datatable_info" style="width: 100%;">
+    <thead>
+        <tr class="header-row" role="row">
+            <th data-priority="0" ng-bind="locale.messages['app.label.sale.time']" class="sorting" tabindex="0" aria-controls="auctionLiveNow-datatable" rowspan="1" colspan="1" style="width: 182.2px;" aria-label="Sale Time: activate to sort column ascending">Sale Time</th>
+            <th data-priority="0" ng-bind="locale.messages['view.auction.list.location']" class="sorting" tabindex="0" aria-controls="auctionLiveNow-datatable" rowspan="1" colspan="1" style="width: 206.2px;" aria-label="Sale Name: activate to sort column ascending">Sale Name</th>
+            <th pref-code="salesListPreference.columns" access-value="showRegion" ng-bind="locale.messages['app.label.region']" class="sorting" tabindex="0" aria-controls="auctionLiveNow-datatable" rowspan="1" colspan="1" style="width: 76.2px;" aria-label="Region: activate to sort column ascending">Region</th>
+            <th pref-code="salesListPreference.columns" access-value="showSalesType" class="saleTypeCol sorting" tabindex="0" aria-controls="auctionLiveNow-datatable" rowspan="1" colspan="1" style="width: 98.2px;" aria-label="
+            Sale Type
+        : activate to sort column ascending">
+                Sale Type
+            </th>
+            <th pref-code="auctionFields" access-value="sale_highlights" ng-bind="locale.messages['app.label.sale.highlights']" class="sorting_disabled" rowspan="1" colspan="1" style="width: 150.2px;" aria-label="Sale Highlights">Sale Highlights</th>
+            <th data-priority="1" ng-bind="locale.messages['view.auction.list.tooltip.lane']" class="auction-lane sorting_disabled" rowspan="1" colspan="1" style="width: 29px;" aria-label="Lane">
+                Lane</th>
+            <th data-priority="1" data-orderable="false" class="auction-lane-popover sorting_disabled" rowspan="1" colspan="1" style="width: 23.2px;" aria-label="
+            
+                
+            
+        ">
+                <a tooltip="" popoverid="popover-content" class="popover-span" data-original-title="" title="">
+                    <i class="fa fa-question-circle black-color"></i>
+                </a>
+            </th>
+            <th data-priority="1" ng-bind="locale.messages['app.label.item']" class="sorting_disabled" rowspan="1" colspan="1" style="width: 67.2px;" aria-label="Items">Items</th>
+            <th class="btn-col sorting_disabled" data-priority="0" data-orderable="false" rowspan="1" colspan="1" style="width: 90.2px;" aria-label=""></th>
+            <th data-orderable="false" class="control sorting_disabled" rowspan="1" colspan="1" style="width: 0px; display: none;" aria-label=""></th>
+        </tr>
+    </thead>
+    <tbody>
+        <!---->
+        <!---->
+        <!---->
+        <!---->
+        <!---->
+        <!---->
+        <!---->
+        <!---->
+        <!---->
+        <!---->
+        <!---->
+        <!---->
+        <!---->
+        <!---->
+        <!---->
+        <!---->
+        <tr ng-repeat="auction in list =(data.liveAuctions)" on-finish-render="ngRepeatFinished" role="row" class="odd">
+            <!---->
+            <td class="nowrap live-auction-circle" ng-if="$index==0 || data.liveAuctions[$index-1].yardNumber !== auction.yardNumber" ng-attr-data-order="{{auction.saleUtcDateTime}}" ng-attr-data-search="{{auction.startTimeAsString +' '+ auction.timeZoneCode}}" data-order="1734973200000"
+                data-search="07:00 PM GMT+2">
+                <i class="padding-right" ng-class="(locale.messages['app.todays.auctions.circle'] ? 'fa fa-circle fa-li-live':'')"></i>07:00 PM GMT+2
+            </td>
+            <!---->
+            <!---->
+            <!---->
+            <!---->
+            <td ng-if="$index==0 || data.liveAuctions[$index-1].yardNumber !== auction.yardNumber" ng-attr-data-search="{{auction.yardName}}" ng-attr-data-order="{{auction.yardName}}" data-search="Rental Vehicle Sale" data-order="Rental Vehicle Sale">Rental Vehicle Sale<br>
+                <a ng-show="data.liveAuctions[$index+1].yardNumber === auction.yardNumber" data-url="/saleListResult/838/2024-12-23?location=Rental Vehicle Sale&amp;saleDate=1734973200000&amp;liveAuction=true&amp;from=&amp;yardNum=838" class="viewsalelist" ng-bind="locale.messages['app.label.viewAllLaneSaleList']"
+                    sso-sign-on="" brand="COPART" href="./saleListResult/838/2024-12-23?location=Rental Vehicle Sale&amp;saleDate=1734973200000&amp;liveAuction=true&amp;from=&amp;yardNum=838">View
+                    All Lane Sale List</a>
+            </td>
+            <!---->
+            <!---->
+            <td pref-code="salesListPreference.columns" access-value="showRegion" ng-if="$index==0 || data.liveAuctions[$index-1].yardNumber !== auction.yardNumber" ng-attr-data-search="{{auction.yard.regionDescription}}" ng-attr-data-order="{{auction.yard.regionDescription}}"
+                data-search="" data-order="">
+
+            </td>
+            <!---->
+            <!---->
+            <td pref-code="salesListPreference.columns" access-value="showSalesType" ng-attr-data-search="{{saleTypeMap[auction.yardNumber]}}" ng-attr-data-order="{{saleTypeMap[auction.yardNumber]}}" data-search="" data-order="">
+
+            </td>
+            <!---->
+            <!---->
+            <td pref-code="auctionFields" access-value="sale_highlights" ng-if="!auction.saleHighlights || auction.saleHighlights.length == 0" class="salehighlight" ng-attr-data-search="{{auction.saleHighlights | limitTo: 50}}" ng-attr-data-order="{{auction.saleHighlights | limitTo: 50}}"
+                data-search="" data-order="">&nbsp;
+            </td>
+            <!---->
+            <td class="laneno">A</td>
+            <td></td>
+            <td class="itemno">314</td>
+            <td class="text-center">
+                <ul class="list-unstyled" style="margin-bottom:0px">
+                    <li>
+                        <a type="submit" style="white-space: nowrap" data-url="/auctionDashboard?auctionDetails=838-A" class="btn btn-green joinsearch small" sso-sign-on="" brand="COPART" href="./auctionDashboard?auctionDetails=838-A">
+                            Join Auction
+                        </a>
+                    </li>
+                    <li class="text-center">
+                        <a data-url="/saleListResult/838/2024-12-23/A?location=Rental Vehicle Sale&amp;saleDate=1734973200000&amp;liveAuction=true&amp;from=&amp;yardNum=838" sso-sign-on="" brand="COPART" href="./saleListResult/838/2024-12-23/A?location=Rental Vehicle Sale&amp;saleDate=1734973200000&amp;liveAuction=true&amp;from=&amp;yardNum=838">
+                            View Sale List
+                        </a>
+                    </li>
+                </ul>
+            </td>
+            <td class=" control" tabindex="0" style="display: none;"></td>
+        </tr>
+        <tr ng-repeat="auction in list =(data.liveAuctions)" on-finish-render="ngRepeatFinished" role="row" class="even">
+            <!---->
+            <td class="nowrap live-auction-circle" ng-if="$index==0 || data.liveAuctions[$index-1].yardNumber !== auction.yardNumber" ng-attr-data-order="{{auction.saleUtcDateTime}}" ng-attr-data-search="{{auction.startTimeAsString +' '+ auction.timeZoneCode}}" data-order="1734984000000"
+                data-search="10:00 PM GMT+2">
+                <i class="padding-right" ng-class="(locale.messages['app.todays.auctions.circle'] ? 'fa fa-circle fa-li-live':'')"></i>10:00 PM GMT+2
+            </td>
+            <!---->
+            <!---->
+            <!---->
+            <!---->
+            <td ng-if="$index==0 || data.liveAuctions[$index-1].yardNumber !== auction.yardNumber" ng-attr-data-search="{{auction.yardName}}" ng-attr-data-order="{{auction.yardName}}" data-search="CA - So Sacramento" data-order="CA - So Sacramento">CA - So Sacramento<br>
+                <a ng-show="data.liveAuctions[$index+1].yardNumber === auction.yardNumber" data-url="/saleListResult/16/2024-12-23?location=CA - So Sacramento&amp;saleDate=1734984000000&amp;liveAuction=true&amp;from=&amp;yardNum=16" class="viewsalelist ng-hide" ng-bind="locale.messages['app.label.viewAllLaneSaleList']"
+                    sso-sign-on="" brand="COPART" href="./saleListResult/16/2024-12-23?location=CA - So Sacramento&amp;saleDate=1734984000000&amp;liveAuction=true&amp;from=&amp;yardNum=16">View
+                    All Lane Sale List</a>
+            </td>
+            <!---->
+            <!---->
+            <td pref-code="salesListPreference.columns" access-value="showRegion" ng-if="$index==0 || data.liveAuctions[$index-1].yardNumber !== auction.yardNumber" ng-attr-data-search="{{auction.yard.regionDescription}}" ng-attr-data-order="{{auction.yard.regionDescription}}"
+                data-search="" data-order="">
+
+            </td>
+            <!---->
+            <!---->
+            <td pref-code="salesListPreference.columns" access-value="showSalesType" ng-attr-data-search="{{saleTypeMap[auction.yardNumber]}}" ng-attr-data-order="{{saleTypeMap[auction.yardNumber]}}" data-search="" data-order="">
+
+            </td>
+            <!---->
+            <!---->
+            <td pref-code="auctionFields" access-value="sale_highlights" ng-if="!auction.saleHighlights || auction.saleHighlights.length == 0" class="salehighlight" ng-attr-data-search="{{auction.saleHighlights | limitTo: 50}}" ng-attr-data-order="{{auction.saleHighlights | limitTo: 50}}"
+                data-search="" data-order="">&nbsp;
+            </td>
+            <!---->
+            <td class="laneno">A</td>
+            <td></td>
+            <td class="itemno">208</td>
+            <td class="text-center">
+                <ul class="list-unstyled" style="margin-bottom:0px">
+                    <li>
+                        <a type="submit" style="white-space: nowrap" data-url="/auctionDashboard?auctionDetails=16-A" class="btn btn-green joinsearch small" sso-sign-on="" brand="COPART" href="./auctionDashboard?auctionDetails=16-A">
+                            Join Auction
+                        </a>
+                    </li>
+                    <li class="text-center">
+                        <a data-url="/saleListResult/16/2024-12-23/A?location=CA - So Sacramento&amp;saleDate=1734984000000&amp;liveAuction=true&amp;from=&amp;yardNum=16" sso-sign-on="" brand="COPART" href="./saleListResult/16/2024-12-23/A?location=CA - So Sacramento&amp;saleDate=1734984000000&amp;liveAuction=true&amp;from=&amp;yardNum=16">
+                            View Sale List
+                        </a>
+                    </li>
+                </ul>
+            </td>
+            <td class=" control" tabindex="0" style="display: none;"></td>
+        </tr>
+        <tr ng-repeat="auction in list =(data.liveAuctions)" on-finish-render="ngRepeatFinished" role="row" class="odd">
+            <!---->
+            <td class="nowrap live-auction-circle" ng-if="$index==0 || data.liveAuctions[$index-1].yardNumber !== auction.yardNumber" ng-attr-data-order="{{auction.saleUtcDateTime}}" ng-attr-data-search="{{auction.startTimeAsString +' '+ auction.timeZoneCode}}" data-order="1734991200000"
+                data-search="12:00 AM GMT+2">
+                <i class="padding-right" ng-class="(locale.messages['app.todays.auctions.circle'] ? 'fa fa-circle fa-li-live':'')"></i>12:00 AM GMT+2
+            </td>
+            <!---->
+            <!---->
+            <!---->
+            <!---->
+            <td ng-if="$index==0 || data.liveAuctions[$index-1].yardNumber !== auction.yardNumber" ng-attr-data-search="{{auction.yardName}}" ng-attr-data-order="{{auction.yardName}}" data-search="HI - Honolulu" data-order="HI - Honolulu">HI - Honolulu<br>
+                <a ng-show="data.liveAuctions[$index+1].yardNumber === auction.yardNumber" data-url="/saleListResult/110/2024-12-23?location=HI - Honolulu&amp;saleDate=1734991200000&amp;liveAuction=true&amp;from=&amp;yardNum=110" class="viewsalelist ng-hide" ng-bind="locale.messages['app.label.viewAllLaneSaleList']"
+                    sso-sign-on="" brand="COPART" href="./saleListResult/110/2024-12-23?location=HI - Honolulu&amp;saleDate=1734991200000&amp;liveAuction=true&amp;from=&amp;yardNum=110">View
+                    All Lane Sale List</a>
+            </td>
+            <!---->
+            <!---->
+            <td pref-code="salesListPreference.columns" access-value="showRegion" ng-if="$index==0 || data.liveAuctions[$index-1].yardNumber !== auction.yardNumber" ng-attr-data-search="{{auction.yard.regionDescription}}" ng-attr-data-order="{{auction.yard.regionDescription}}"
+                data-search="" data-order="">
+
+            </td>
+            <!---->
+            <!---->
+            <td pref-code="salesListPreference.columns" access-value="showSalesType" ng-attr-data-search="{{saleTypeMap[auction.yardNumber]}}" ng-attr-data-order="{{saleTypeMap[auction.yardNumber]}}" data-search="" data-order="">
+
+            </td>
+            <!---->
+            <!---->
+            <td pref-code="auctionFields" access-value="sale_highlights" ng-if="!auction.saleHighlights || auction.saleHighlights.length == 0" class="salehighlight" ng-attr-data-search="{{auction.saleHighlights | limitTo: 50}}" ng-attr-data-order="{{auction.saleHighlights | limitTo: 50}}"
+                data-search="" data-order="">&nbsp;
+            </td>
+            <!---->
+            <td class="laneno">A</td>
+            <td></td>
+            <td class="itemno">170</td>
+            <td class="text-center">
+                <ul class="list-unstyled" style="margin-bottom:0px">
+                    <li>
+                        <a type="submit" style="white-space: nowrap" data-url="/auctionDashboard?auctionDetails=110-A" class="btn btn-green joinsearch small" sso-sign-on="" brand="COPART" href="./auctionDashboard?auctionDetails=110-A">
+                            Join Auction
+                        </a>
+                    </li>
+                    <li class="text-center">
+                        <a data-url="/saleListResult/110/2024-12-23/A?location=HI - Honolulu&amp;saleDate=1734991200000&amp;liveAuction=true&amp;from=&amp;yardNum=110" sso-sign-on="" brand="COPART" href="./saleListResult/110/2024-12-23/A?location=HI - Honolulu&amp;saleDate=1734991200000&amp;liveAuction=true&amp;from=&amp;yardNum=110">
+                            View Sale List
+                        </a>
+                    </li>
+                </ul>
+            </td>
+            <td class=" control" tabindex="0" style="display: none;"></td>
+        </tr>
+    </tbody>
+</table>
