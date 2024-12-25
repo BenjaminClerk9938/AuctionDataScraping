@@ -1,37 +1,96 @@
-const puppeteer = require('puppeteer');
-const fs = require('fs');
+const puppeteer = require("puppeteer");
+const fs = require("fs");
 
 (async () => {
+  async function fetchAllLaneSaleList(page, saleLink) {
+    const newPage = await page.browser().newPage();
+    await newPage.goto(saleLink, { waitUntil: "networkidle2" });
+
+    const showAllButtonXPath = "//button[contains(text(), 'Show all')]";
+    const [showAllButton] = await newPage.$x(showAllButtonXPath);
+
+    if (showAllButton) {
+      console.log("Clicking the 'Show all' button...");
+      await showAllButton.click();
+      await newPage.waitForTimeout(2000); // Allow some time for rows to render
+    } else {
+      console.log("'Show all' button not found.");
+    }
+
+    try {
+      await newPage.waitForSelector("#pn_id_2-table tbody tr", {
+        timeout: 60000,
+      });
+    } catch (e) {
+      console.error("Table rows not found.");
+      await newPage.close();
+      return [];
+    }
+
+    const saleList = await newPage.evaluate(() => {
+      const table = document.querySelector("#pn_id_2-table");
+      const rows = Array.from(table.querySelectorAll("tbody tr"));
+      return rows.map((row) => {
+        const cells = row.querySelectorAll("td");
+        return {
+          image: {
+            link:
+              cells[0]?.querySelector('a[aria-label="Lot Details"]')?.href ||
+              "",
+            imgUrl: cells[0]?.querySelector("img")?.src || "",
+          },
+          LotInfo: {
+            name: cells[1]?.querySelector("a")?.innerText.trim() || "",
+            link: cells[1]?.querySelector("a")?.href || "",
+            lotNumber:
+              cells[1]?.querySelector("div.lot-number-row")?.innerText.trim() ||
+              "",
+            lotLink:
+              cells[1]?.querySelector("div.lot-number-row a")?.href || "",
+          },
+          VehicleInfo:
+            cells[2]
+              ?.querySelector("div.search_result_veh_info_block")
+              ?.innerText.trim() || "",
+          condition:
+            cells[3]
+              ?.querySelector("div.search_result_condition_block")
+              ?.innerText.trim() || "",
+          SaleInfo: cells[4]?.innerText.trim() || "",
+          Bids: cells[5]?.innerText.trim() || "",
+        };
+      });
+    });
+
+    await newPage.close();
+    return saleList;
+  }
+
   try {
-    // Launch Puppeteer
-    const browser = await puppeteer.launch({ 
+    const browser = await puppeteer.launch({
       headless: true,
-      timeout: 60000  // Increase timeout to 60 seconds
+      timeout: 60000,
     });
     const page = await browser.newPage();
 
-    // Set longer timeout for navigation
     await page.setDefaultNavigationTimeout(60000);
-    
-    // Navigate to the Copart auction page
-    const url = 'https://www.copart.com/todaysAuction';
-    await page.goto(url, { 
-      waitUntil: 'networkidle2',
-      timeout: '60000' 
-    });
 
-    // Wait for table with longer timeout
-    await page.waitForSelector('#auctionLiveNow-datatable', { timeout: 60000 });
+    const url = "https://www.copart.com/todaysAuction";
+    await page.goto(url, { waitUntil: "networkidle2" });
 
-    // Extract data from the table
+    await page.waitForSelector("#auctionLiveNow-datatable", { timeout: 60000 });
+
     const liveNowTableData = await page.evaluate(() => {
-      const table = document.querySelector('#auctionLiveNow-datatable');
-      const rows = Array.from(table.querySelectorAll('tbody tr'));
-      return rows.map(row => {
-        const cells = row.querySelectorAll('td');
+      const table = document.querySelector("#auctionLiveNow-datatable");
+      const rows = Array.from(table.querySelectorAll("tbody tr"));
+      return rows.map((row) => {
+        const cells = row.querySelectorAll("td");
         return {
           saleTime: cells[0]?.innerText.trim(),
-          saleName: { name: cells[1]?.innerText.trim(), link: cells[1]?.querySelector('a.viewsalelist')?.href},
+          saleName: {
+            name: cells[1]?.innerText.trim(),
+            link: cells[1]?.querySelector("a.viewsalelist")?.href,
+          },
           region: cells[2]?.innerText.trim(),
           saleType: cells[3]?.innerText.trim(),
           saleHighlights: cells[4]?.innerText.trim(),
@@ -44,15 +103,26 @@ const fs = require('fs');
         };
       });
     });
-    console.log(liveNowTableData);
-    await page.waitForSelector('#auctionLaterToday-datatable');
 
-    // Extract data from the table
+    for (const row of liveNowTableData) {
+      if (row.saleName.link) {
+        console.log(`Fetching lane sale list for ${row.saleName.name}...`);
+        row.saleName.saleList = await fetchAllLaneSaleList(
+          page,
+          row.saleName.link
+        );
+      }
+    }
+
+    await page.waitForSelector("#auctionLaterToday-datatable", {
+      timeout: 60000,
+    });
+
     const laterTodayTableData = await page.evaluate(() => {
-      const table = document.querySelector('#auctionLaterToday-datatable');
-      const rows = Array.from(table.querySelectorAll('tbody tr'));
-      return rows.map(row => {
-        const cells = row.querySelectorAll('td');
+      const table = document.querySelector("#auctionLaterToday-datatable");
+      const rows = Array.from(table.querySelectorAll("tbody tr"));
+      return rows.map((row) => {
+        const cells = row.querySelectorAll("td");
         return {
           saleTime: cells[0]?.innerText.trim(),
           saleName: cells[1]?.innerText.trim(),
@@ -68,18 +138,13 @@ const fs = require('fs');
         };
       });
     });
-    console.log(laterTodayTableData);
+
     const allData = [...liveNowTableData, ...laterTodayTableData];
-    // Save the data to a JSON file
-    fs.writeFileSync(
-      "data/auctionLiveNow.json",
-      JSON.stringify(allData, null)
-    );
+    fs.writeFileSync("data/auctionLiveNow.json", JSON.stringify(allData, null, 2));
     console.log("Auction data successfully scraped and saved.");
 
-    // Close the browser
     await browser.close();
   } catch (error) {
-    console.error('Error scraping auction data:', error);
+    console.error("Error scraping auction data:", error);
   }
 })();
