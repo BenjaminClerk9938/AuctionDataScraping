@@ -8,15 +8,15 @@ const fs = require("fs");
 
     page.on("console", (msg) => console.log("PAGE LOG:", msg.text()));
 
-    const showAllButton = await newPage.$("button.export-csv-button");
-    console.log(showAllButton);
-    if (showAllButton) {
-      console.log("Clicking the 'Show all' button...");
-      await showAllButton.click();
-      await new Promise((resolve) => setTimeout(resolve, 2000)); // Allow time for data to load
-    } else {
-      console.log("'Show all' button not found.");
-    }
+    // const showAllButton = await newPage.$("button.export-csv-button");
+    // console.log(showAllButton);
+    // if (showAllButton) {
+    //   console.log("Clicking the 'Show all' button...");
+    //   await showAllButton.click();
+    //   await new Promise((resolve) => setTimeout(resolve, 2000)); // Allow time for data to load
+    // } else {
+    //   console.log("'Show all' button not found.");
+    // }
 
     try {
       await newPage.waitForSelector("#pn_id_2-table tbody tr", {
