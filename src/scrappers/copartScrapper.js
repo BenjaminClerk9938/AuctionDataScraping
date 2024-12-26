@@ -6,13 +6,14 @@ const fs = require("fs");
     const newPage = await page.browser().newPage();
     await newPage.goto(saleLink, { waitUntil: "networkidle2" });
 
-    const showAllButtonXPath = "//button[contains(text(), 'Show all')]";
-    const [showAllButton] = await newPage.$x(showAllButtonXPath);
+    page.on("console", (msg) => console.log("PAGE LOG:", msg.text()));
 
+    const showAllButton = await newPage.$("button.export-csv-button");
+    console.log(showAllButton);
     if (showAllButton) {
       console.log("Clicking the 'Show all' button...");
       await showAllButton.click();
-      await newPage.waitForTimeout(2000); // Allow some time for rows to render
+      await new Promise((resolve) => setTimeout(resolve, 2000)); // Allow time for data to load
     } else {
       console.log("'Show all' button not found.");
     }
@@ -66,6 +67,8 @@ const fs = require("fs");
     return saleList;
   }
 
+  
+  
   try {
     const browser = await puppeteer.launch({
       headless: true,
@@ -125,7 +128,10 @@ const fs = require("fs");
         const cells = row.querySelectorAll("td");
         return {
           saleTime: cells[0]?.innerText.trim(),
-          saleName: cells[1]?.innerText.trim(),
+          saleName: {
+            name: cells[1]?.innerText.trim(),
+            link: cells[1]?.querySelector("a.viewsalelist")?.href,
+          },
           region: cells[2]?.innerText.trim(),
           saleType: cells[3]?.innerText.trim(),
           saleHighlights: cells[4]?.innerText.trim(),
@@ -138,9 +144,20 @@ const fs = require("fs");
         };
       });
     });
-
+    for (const row of laterTodayTableData) {
+      if (row.saleName.link) {
+        console.log(`Fetching lane sale list for ${row.saleName.name}...`);
+        row.saleName.saleList = await fetchAllLaneSaleList(
+          page,
+          row.saleName.link
+        );
+      }
+    }
     const allData = [...liveNowTableData, ...laterTodayTableData];
-    fs.writeFileSync("data/auctionLiveNow.json", JSON.stringify(allData, null, 2));
+    fs.writeFileSync(
+      "data/auctionLiveNow.json",
+      JSON.stringify(allData, null, 2)
+    );
     console.log("Auction data successfully scraped and saved.");
 
     await browser.close();
